@@ -24,7 +24,7 @@ struct QuranTextView: View {
         Text(text)
             .font(Font.custom("TE HAFS2 Tharwat Emara", size: fontSize))
             .foregroundColor(textColor)
-            .multilineTextAlignment(.trailing)
+            .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
             .lineSpacing(SizeScaler.scaledPadding(3))
             .padding(.horizontal, SizeScaler.scaledPadding(16))

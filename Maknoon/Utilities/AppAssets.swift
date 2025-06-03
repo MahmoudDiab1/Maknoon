@@ -9,6 +9,7 @@ enum AppAssets {
         // System SF Symbols
         static let arrowLeft = "arrow.left"
         static let arrowRight = "arrow.right"
+        static let arrowHeader = "arrow-right-header"
         static let book = "book"
         static let bookFill = "book.fill"
         static let gear = "gear"
@@ -46,17 +47,17 @@ enum AppAssets {
         
         static let appBackground = "app-background"
         static let splashBackground = "splash-background"
-        
+        static let  rectangleYellowBackGround = "rectangleYellowBackGround"
         // Decorative elements
         static let islamicPattern = "islamic-pattern"
         static let bismillah = "bismillah"
         static let ornamentalDivider = "ornamental-divider"
         static let surahHeader = "surah-header"
-        static let quranFrame = "quran-frame"
-        
+        static let quranFrame =  "SurahFrameDark"
         // Illustrations
         static let emptyState = "empty-state"
         static let notFound = "not-found"
+        
     }
     
     /// Colors from the asset catalog

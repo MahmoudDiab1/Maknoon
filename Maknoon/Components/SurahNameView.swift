@@ -4,15 +4,17 @@ struct SurahNameView: View {
     let surahName: String
     let backgroundColor: Color
     let textColor: Color
+    let fontName: String
     
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(backgroundColor)
-                .shadow(color: Color.black.opacity(0.1), radius: 2)
-            
+        
+        ZStack(alignment: .center) {
+            Image(AppAssets.Images.quranFrame)
+                .resizable()
+                .frame(height: SizeScaler.scaledPadding(60.18598175048828))
+                .padding(.horizontal, 16)
             Text(surahName)
-                .font(Font.custom("RTL-Maghfira-Ramadan", size: 18))
+                .font(Font.custom(fontName, size: 18))
                 .foregroundColor(textColor)
                 .padding(.horizontal, 16)
 

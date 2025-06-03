@@ -129,3 +129,10 @@ extension View {
     }
 } 
 
+extension Int {
+    func toArabicIndic() -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.locale = Locale(identifier: "ar")
+        return numberFormatter.string(from: NSNumber(value: self)) ?? "\(self)"
+    }
+}
