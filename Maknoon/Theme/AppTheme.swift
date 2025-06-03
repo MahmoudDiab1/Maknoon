@@ -1,5 +1,18 @@
 import SwiftUI
 
+
+// MARK: - Models
+enum AppAppearance: String, CaseIterable {
+    case light, dark
+    
+    var displayName: String {
+        switch self {
+        case .light: return "Light"
+        case .dark: return "Dark"
+        }
+    }
+}
+
 /// Central theme definitions for the app
 enum AppTheme {
     /// Color definitions
@@ -134,5 +147,35 @@ extension Int {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = Locale(identifier: "ar")
         return numberFormatter.string(from: NSNumber(value: self)) ?? "\(self)"
+    }
+}
+
+// MARK: - Theme
+struct QuranTheme {
+    let textColor: Color
+    let headerColor: Color
+    let backgroundColor: Color
+    
+    static func theme(for colorScheme: ColorScheme) -> QuranTheme {
+        switch colorScheme {
+        case .dark:
+            return QuranTheme(
+                textColor: Constants.DarkModeTextColor,
+                headerColor: Constants.DarkModeHederColor,
+                backgroundColor: Constants.DarkModeBackground
+            )
+        case .light:
+            return QuranTheme(
+                textColor: Color(red: 0.14, green: 0.27, blue: 0.37),
+                headerColor: Constants.DarkModeHederColor,
+                backgroundColor: Color(white: 0.98)
+            )
+        @unknown default:
+            return QuranTheme(
+                textColor: Color(red: 0.14, green: 0.27, blue: 0.37),
+                headerColor: Constants.DarkModeHederColor,
+                backgroundColor: Color(white: 0.98)
+            )
+        }
     }
 }

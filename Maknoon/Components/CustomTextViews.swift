@@ -1,62 +1,39 @@
-//
-//  CustomTextViews.swift
-//  Maknoon
-//
-//  Created by Mahmoud Diab on 03/06/2025.
-//
-
+import CoreFoundation
 import SwiftUI
 
 struct QuranTextView: View {
     let text: String
-    let fontSize: CGFloat
     @Binding var isFullscreen: Bool
     let textColor: Color
-    
-    init(text: String, fontSize: CGFloat, isFullscreen: Binding<Bool>, textColor: Color) {
-        self.text = text
-        self.fontSize = fontSize
-        self._isFullscreen = isFullscreen
-        self.textColor = textColor
-    }
 
     var body: some View {
-        Text(text)
-            .font(Font.custom("TE HAFS2 Tharwat Emara", size: fontSize))
-            .foregroundColor(textColor)
-            .multilineTextAlignment(.center)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
-            .lineSpacing(SizeScaler.scaledPadding(3))
-            .padding(.horizontal, SizeScaler.scaledPadding(16))
-            .padding(.vertical, SizeScaler.scaledPadding(8))
-            .contentShape(Rectangle())
-            .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    isFullscreen.toggle()
-                }
+        GeometryReader { geometry in
+            let height = geometry.size.height
+            let calculatedFontSize = computeFontSize(for: height)
+
+            VStack {
+                Text(text)
+                    .font(Font.custom("TE HAFS2 Tharwat Emara", size: calculatedFontSize))
+                    .foregroundColor(textColor)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(SizeScaler.scaledPadding(3))
+                    .padding(.horizontal, SizeScaler.scaledPadding(16))
+                    .padding(.vertical, SizeScaler.scaledPadding(6))
+                    .onTapGesture {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            isFullscreen.toggle()
+                        }
+                    }
+                Spacer(minLength: 0)
             }
+        }
     }
-}
 
-struct VersePlaceholderView: View {
-    let fontSize: CGFloat
-    let textColor: Color
-    @Binding var isFullscreen: Bool
-
-    var body: some View {
-        Text("Verses view: To be implemented")
-            .font(.system(size: fontSize))
-            .foregroundColor(textColor)
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-            .lineSpacing(isFullscreen ? SizeScaler.scaledPadding(3) : SizeScaler.scaledPadding(2))
-            .padding(SizeScaler.scaledPadding(16))
-            .frame(maxWidth: .infinity, alignment: .center)
-            .contentShape(Rectangle())
-            .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    isFullscreen.toggle()
-                }
-            }
+    private func computeFontSize(for height: CGFloat) -> CGFloat {
+        if isFullscreen {
+            return min(SizeScaler.scaledFont(18.2), height / 28)
+        } else {
+            return min(SizeScaler.scaledFont(15), height / 30)
+        }
     }
 }
