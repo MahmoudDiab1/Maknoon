@@ -1,42 +1,28 @@
 import SwiftUI
 
-struct SizeScaler {
-    static let baseWidth: CGFloat = 375 // Base width (iPhone 11)
-    static let baseHeight: CGFloat = 812 // Base height (iPhone 11)
-
-    static var widthRatio: CGFloat {
-        UIScreen.main.bounds.width / baseWidth
-    }
-
-    static var heightRatio: CGFloat {
-        UIScreen.main.bounds.height / baseHeight
-    }
-
-    static func scaledFont(_ size: CGFloat) -> CGFloat {
-        size * min(widthRatio, heightRatio)
-    }
-
-    static func scaledPadding(_ value: CGFloat) -> CGFloat {
-        value * widthRatio
-    }
-}
-
-struct Constants {
-    static let ButtonsSecodaryButtonColor: Color = Color(red: 0.14, green: 0.27, blue: 0.37)
-}
-
 struct QuranReaderView: View {
     @ObservedObject var viewModel: QuranReaderViewModel
     @State private var currentPage: Int = 11
     @State private var isFullscreen: Bool = false
     @State private var isPageMode: Bool = true
+    @AppStorage("appAppearance") private var appAppearance: String = AppAppearance.system.rawValue
+    @Environment(\.colorScheme) private var colorScheme
 
     // MARK: - Font sizes based on screen size
     private var defaultFontSize: CGFloat { SizeScaler.scaledFont(16) }
     private var fullscreenFontSize: CGFloat { SizeScaler.scaledFont(18) }
-    private let quranTextColor = Color(red: 0.14, green: 0.27, blue: 0.37)
-    private let backgroundColor = Color(white: 0.98)
-    private let lightGrayBackground = Color(white: 0.95)
+    
+    private var quranTextColor: Color {
+        colorScheme == .dark ? Constants.DarkModeTextColor : Color(red: 0.14, green: 0.27, blue: 0.37)
+    }
+    
+    private var backgroundColor: Color {
+        colorScheme == .dark ? Constants.DarkModeBackground : Color(white: 0.98)
+    }
+    
+    private var lightGrayBackground: Color {
+        colorScheme == .dark ? Color(white: 0.15) : Color(white: 0.95)
+    }
 
     init(viewModel: QuranReaderViewModel) {
         self.viewModel = viewModel
@@ -44,7 +30,7 @@ struct QuranReaderView: View {
 
     var body: some View {
         ZStack {
-            Color.white
+            backgroundColor
                 .ignoresSafeArea(edges: isFullscreen ? [] : .all)
 
             VStack(spacing: 0) {
@@ -63,49 +49,73 @@ struct QuranReaderView: View {
         .gesture(swipeGesture)
         .onAppear { viewModel.loadPage(currentPage) }
         .animation(.easeInOut(duration: 0.3), value: isFullscreen)
+        .preferredColorScheme(selectedColorScheme)
+    }
+
+    private var selectedColorScheme: ColorScheme? {
+        switch AppAppearance(rawValue: appAppearance) ?? .system {
+        case .system: return nil
+        case .light: return .light
+        case .dark: return .dark
+        }
     }
 
     // MARK: - Components
 
     private var header: some View {
-        HStack {
-            Button(action: goToPreviousPage) {
-                HStack(spacing: SizeScaler.scaledPadding(5)) {
-                    Text("الصفحة السابقة")
-                        .font(Font.custom("IBMPlexSansArabic-Regular", size: SizeScaler.scaledFont(14)))
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(Color.white)
-
-                    Image(AppAssets.Icons.arrowLeftIcon)
-                        .resizable()
-                        .frame(width: SizeScaler.scaledPadding(11.5), height: SizeScaler.scaledPadding(11.5))
+        VStack(spacing: SizeScaler.scaledPadding(8)) {
+            // Appearance Picker
+            Picker("Appearance", selection: $appAppearance) {
+                ForEach(AppAppearance.allCases, id: \.self) { appearance in
+                    Text(appearance.displayName).tag(appearance.rawValue)
                 }
-                .frame(width: SizeScaler.scaledPadding(116), height: SizeScaler.scaledPadding(40))
-                .padding(SizeScaler.scaledPadding(6))
-                .background(Constants.ButtonsSecodaryButtonColor)
-                .cornerRadius(50)
             }
-            .disabled(currentPage <= 1)
+            .pickerStyle(SegmentedPickerStyle())
+            .padding(.horizontal, SizeScaler.scaledPadding(16))
+            .background(colorScheme == .dark ? Constants.DarkModeBackground : Color.white)
+            .cornerRadius(8)
+            .shadow(color: Color.black.opacity(0.1), radius: 2)
+            
+            // Navigation Controls
+            HStack {
+                Button(action: goToPreviousPage) {
+                    HStack(spacing: SizeScaler.scaledPadding(5)) {
+                        Text("الصفحة السابقة")
+                            .font(Font.custom("IBMPlexSansArabic-Regular", size: SizeScaler.scaledFont(14)))
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color.white)
 
-            Spacer()
+                        Image(AppAssets.Icons.arrowLeftIcon)
+                            .resizable()
+                            .frame(width: SizeScaler.scaledPadding(11.5), height: SizeScaler.scaledPadding(11.5))
+                    }
+                    .frame(width: SizeScaler.scaledPadding(116), height: SizeScaler.scaledPadding(40))
+                    .padding(SizeScaler.scaledPadding(6))
+                    .background(Constants.ButtonsSecodaryButtonColor)
+                    .cornerRadius(50)
+                }
+                .disabled(currentPage <= 1)
 
-            Text("\(currentPage)")
-                .font(Font.custom("IBMPlexSansArabic-Regular", size: SizeScaler.scaledFont(14)))
-                .multilineTextAlignment(.center)
-                .foregroundColor(Color.black)
-                .frame(width: SizeScaler.scaledPadding(40), height: SizeScaler.scaledPadding(40))
-                .background(Color.white)
-                .cornerRadius(50)
-                .shadow(color: Color.black.opacity(0.1), radius: 2)
+                Spacer()
+
+                Text("\(currentPage)")
+                    .font(Font.custom("IBMPlexSansArabic-Regular", size: SizeScaler.scaledFont(14)))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(colorScheme == .dark ? Constants.DarkModeTextColor : Color.black)
+                    .frame(width: SizeScaler.scaledPadding(40), height: SizeScaler.scaledPadding(40))
+                    .background(colorScheme == .dark ? Color(white: 0.2) : Color.white)
+                    .cornerRadius(50)
+                    .shadow(color: Color.black.opacity(0.1), radius: 2)
+            }
+            .frame(height: SizeScaler.scaledPadding(64))
+            .padding(.horizontal, SizeScaler.scaledPadding(16))
         }
-        .frame(height: SizeScaler.scaledPadding(64))
-        .padding(.horizontal, SizeScaler.scaledPadding(16))
         .transition(.opacity)
     }
 
     private var surahTitle: some View {
-        SurahTitleView(
-            title: viewModel.currentSurahName,
+        SurahNameView(
+            surahName: viewModel.currentSurahName,
             backgroundColor: Color.black,
             textColor: quranTextColor
         )
@@ -115,7 +125,7 @@ struct QuranReaderView: View {
 
     private var content: some View {
         ZStack(alignment: .top) {
-            Color.white
+            backgroundColor
             
             Group {
                 if isPageMode {
@@ -241,130 +251,5 @@ struct QuranReaderView: View {
         guard currentPage > 1 else { return }
         currentPage -= 1
         viewModel.loadPage(currentPage)
-    }
-}
-
-struct QuranTextView: View {
-    let text: String
-    let fontSize: CGFloat
-    @Binding var isFullscreen: Bool
-    let textColor: Color
-    
-    init(text: String, fontSize: CGFloat, isFullscreen: Binding<Bool>, textColor: Color) {
-        self.text = text
-        self.fontSize = fontSize
-        self._isFullscreen = isFullscreen
-        self.textColor = textColor
-        
-        // Verify font loading
-        if UIFont.familyNames.contains("TE HAFS2 Tharwat Emara") {
-            print("Font 'TE HAFS2 Tharwat Emara' is available")
-        } else {
-            print("Font 'TE HAFS2 Tharwat Emara' is NOT available")
-            print("Available fonts: \(UIFont.familyNames.joined(separator: ", "))")
-        }
-    }
-
-    var body: some View {
-        Text(text)
-            .font(Font.custom("TE HAFS2 Tharwat Emara", size: fontSize))
-            .foregroundColor(textColor)
-            .multilineTextAlignment(.trailing)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
-            .lineSpacing(SizeScaler.scaledPadding(3))
-            .padding(.horizontal, SizeScaler.scaledPadding(16))
-            .padding(.vertical, SizeScaler.scaledPadding(8))
-            .contentShape(Rectangle())
-            .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    isFullscreen.toggle()
-                }
-            }
-    }
-}
-
-struct VersePlaceholderView: View {
-    let fontSize: CGFloat
-    let textColor: Color
-    @Binding var isFullscreen: Bool
-
-    var body: some View {
-        Text("Verses view: To be implemented")
-            .font(.system(size: fontSize))
-            .foregroundColor(textColor)
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-            .lineSpacing(isFullscreen ? SizeScaler.scaledPadding(3) : SizeScaler.scaledPadding(2))
-            .padding(SizeScaler.scaledPadding(16))
-            .frame(maxWidth: .infinity, alignment: .center)
-            .contentShape(Rectangle())
-            .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    isFullscreen.toggle()
-                }
-            }
-    }
-}
-
-struct QuranFooterToggleButton: View {
-    @Binding var isPageMode: Bool
-    let toggleAction: () -> Void
-
-    var body: some View {
-        let icon = isPageMode ? AppAssets.Icons.listIcon : AppAssets.Icons.bookIcon
-
-        FooterButton(
-            backgroundIcon: AppAssets.Icons.polygonIcon,
-            foregroundIcon: icon,
-            action: toggleAction
-        )
-        .frame(height: SizeScaler.scaledPadding(64))
-    }
-}
-
-struct FooterButton: View {
-    let backgroundIcon: String
-    let foregroundIcon: String
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: {
-            withAnimation { action() }
-        }) {
-            ZStack {
-                Image(backgroundIcon)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: SizeScaler.scaledPadding(64), height: SizeScaler.scaledPadding(64))
-                    .shadow(color: Color(red: 0.96, green: 0.8, blue: 0.52).opacity(0.49), radius: 11, x: 0, y: 8)
-
-                Image(foregroundIcon)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: SizeScaler.scaledPadding(18), height: SizeScaler.scaledPadding(18))
-            }
-        }
-        .frame(height: SizeScaler.scaledPadding(64))
-    }
-}
-
-
-struct SurahTitleView: View {
-    let title: String
-    let backgroundColor: Color
-    let textColor: Color
-    
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(backgroundColor)
-                .shadow(color: Color.black.opacity(0.1), radius: 2)
-            
-            Text(title)
-                .font(Font.custom("RTL-Maghfira-Ramadan", size: 18))
-                .foregroundColor(textColor)
-                .padding(.horizontal, 16)
-        }
-        .padding(.horizontal, SizeScaler.scaledPadding(20))
     }
 }
