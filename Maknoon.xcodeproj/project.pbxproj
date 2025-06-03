@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		0AE43AA72DEE27EF00FD5F8A /* hafs_smart_v8.json in Resources */ = {isa = PBXBuildFile; fileRef = 0AE43AA62DEE27EF00FD5F8A /* hafs_smart_v8.json */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		0AC7811E2DEB6555008C2066 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,11 +31,25 @@
 		0AC781082DEB6553008C2066 /* Maknoon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maknoon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AC7811D2DEB6555008C2066 /* MaknoonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MaknoonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AC781272DEB6555008C2066 /* MaknoonUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MaknoonUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0AE43AA62DEE27EF00FD5F8A /* hafs_smart_v8.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = hafs_smart_v8.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0AC781E92DEBAA56008C2066 /* Exceptions for "Maknoon" folder in "Maknoon" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 0AC781072DEB6553008C2066 /* Maknoon */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0AC7810A2DEB6553008C2066 /* Maknoon */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0AC781E92DEBAA56008C2066 /* Exceptions for "Maknoon" folder in "Maknoon" target */,
+			);
 			path = Maknoon;
 			sourceTree = "<group>";
 		};
@@ -75,6 +93,7 @@
 		0AC780FF2DEB6553008C2066 = {
 			isa = PBXGroup;
 			children = (
+				0AE43AA62DEE27EF00FD5F8A /* hafs_smart_v8.json */,
 				0AC7810A2DEB6553008C2066 /* Maknoon */,
 				0AC781202DEB6555008C2066 /* MaknoonTests */,
 				0AC7812A2DEB6555008C2066 /* MaknoonUITests */,
@@ -192,6 +211,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
 			);
 			mainGroup = 0AC780FF2DEB6553008C2066;
 			minimizedProjectReferenceProxies = 1;
@@ -212,6 +232,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AE43AA72DEE27EF00FD5F8A /* hafs_smart_v8.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,15 +416,17 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Maknoon/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = FHRM3TS3PP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Maknoon/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -428,11 +451,13 @@
 				DEVELOPMENT_TEAM = FHRM3TS3PP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Maknoon/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
