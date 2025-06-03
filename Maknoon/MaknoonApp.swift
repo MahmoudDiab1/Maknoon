@@ -60,7 +60,7 @@ struct MaknoonApp: App {
     
     var body: some Scene {
         WindowGroup {
-            QuranReaderFactory.makeQuranReaderView()
+             QuranReaderFactory.makeQuranReaderView()
         }
     }
 } 

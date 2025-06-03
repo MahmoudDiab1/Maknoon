@@ -1,12 +1,32 @@
 import SwiftUI
+ 
+enum AppAppearance: String, CaseIterable {
+    case light
+    case dark
+    
+    var displayName: String {
+        switch self {
+        case .light: return "Light"
+        case .dark: return "Dark"
+        }
+    }
+}
+
 
 struct QuranReaderView: View {
-    @ObservedObject var viewModel: QuranReaderViewModel
+    @StateObject private var viewModel: QuranReaderViewModel
+    @AppStorage("appAppearance") private var appAppearance: AppAppearance = .light
+    @Environment(\.colorScheme) private var colorScheme
+    
+    init(viewModel: QuranReaderViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+ 
+
+    
     @State private var currentPage: Int = 11
     @State private var isFullscreen: Bool = false
     @State private var isPageMode: Bool = true
-    @AppStorage("appAppearance") private var appAppearance: String = AppAppearance.system.rawValue
-    @Environment(\.colorScheme) private var colorScheme
 
     // MARK: - Font sizes based on screen size
     private var defaultFontSize: CGFloat { SizeScaler.scaledFont(16) }
@@ -23,11 +43,7 @@ struct QuranReaderView: View {
     private var lightGrayBackground: Color {
         colorScheme == .dark ? Color(white: 0.15) : Color(white: 0.95)
     }
-
-    init(viewModel: QuranReaderViewModel) {
-        self.viewModel = viewModel
-    }
-
+    
     var body: some View {
         ZStack {
             backgroundColor
@@ -53,8 +69,7 @@ struct QuranReaderView: View {
     }
 
     private var selectedColorScheme: ColorScheme? {
-        switch AppAppearance(rawValue: appAppearance) ?? .system {
-        case .system: return nil
+        switch AppAppearance(rawValue: appAppearance.rawValue) ?? .light {
         case .light: return .light
         case .dark: return .dark
         }
@@ -64,51 +79,24 @@ struct QuranReaderView: View {
 
     private var header: some View {
         VStack(spacing: SizeScaler.scaledPadding(8)) {
-            // Appearance Picker
-            Picker("Appearance", selection: $appAppearance) {
-                ForEach(AppAppearance.allCases, id: \.self) { appearance in
-                    Text(appearance.displayName).tag(appearance.rawValue)
-                }
+            // Dark Mode Toggle
+            HStack {
+                Spacer()
+                Toggle("", isOn: Binding(
+                    get: { appAppearance == .dark },
+                    set: { newValue in
+                        appAppearance = newValue ? .dark : .light
+                    }
+                ))
+                .labelsHidden()
             }
-            .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal, SizeScaler.scaledPadding(16))
+            .padding(.vertical, SizeScaler.scaledPadding(8))
             .background(colorScheme == .dark ? Constants.DarkModeBackground : Color.white)
             .cornerRadius(8)
             .shadow(color: Color.black.opacity(0.1), radius: 2)
             
-            // Navigation Controls
-            HStack {
-                Button(action: goToPreviousPage) {
-                    HStack(spacing: SizeScaler.scaledPadding(5)) {
-                        Text("الصفحة السابقة")
-                            .font(Font.custom("IBMPlexSansArabic-Regular", size: SizeScaler.scaledFont(14)))
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.white)
-
-                        Image(AppAssets.Icons.arrowLeftIcon)
-                            .resizable()
-                            .frame(width: SizeScaler.scaledPadding(11.5), height: SizeScaler.scaledPadding(11.5))
-                    }
-                    .frame(width: SizeScaler.scaledPadding(116), height: SizeScaler.scaledPadding(40))
-                    .padding(SizeScaler.scaledPadding(6))
-                    .background(Constants.ButtonsSecodaryButtonColor)
-                    .cornerRadius(50)
-                }
-                .disabled(currentPage <= 1)
-
-                Spacer()
-
-                Text("\(currentPage)")
-                    .font(Font.custom("IBMPlexSansArabic-Regular", size: SizeScaler.scaledFont(14)))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(colorScheme == .dark ? Constants.DarkModeTextColor : Color.black)
-                    .frame(width: SizeScaler.scaledPadding(40), height: SizeScaler.scaledPadding(40))
-                    .background(colorScheme == .dark ? Color(white: 0.2) : Color.white)
-                    .cornerRadius(50)
-                    .shadow(color: Color.black.opacity(0.1), radius: 2)
-            }
-            .frame(height: SizeScaler.scaledPadding(64))
-            .padding(.horizontal, SizeScaler.scaledPadding(16))
+              
         }
         .transition(.opacity)
     }
@@ -251,5 +239,14 @@ struct QuranReaderView: View {
         guard currentPage > 1 else { return }
         currentPage -= 1
         viewModel.loadPage(currentPage)
+    }
+}
+
+struct QuranReaderView_Previews: PreviewProvider {
+    static var previews: some View {
+        let networkService = NetworkService()
+        let api = QuranAPIImpl(networkService: networkService)
+        let viewModel = QuranReaderViewModel(api: api)
+        return QuranReaderView(viewModel: viewModel)
     }
 }

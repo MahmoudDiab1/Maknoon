@@ -18,14 +18,6 @@ struct QuranTextView: View {
         self.fontSize = fontSize
         self._isFullscreen = isFullscreen
         self.textColor = textColor
-        
-        // Verify font loading
-        if UIFont.familyNames.contains("TE HAFS2 Tharwat Emara") {
-            print("Font 'TE HAFS2 Tharwat Emara' is available")
-        } else {
-            print("Font 'TE HAFS2 Tharwat Emara' is NOT available")
-            print("Available fonts: \(UIFont.familyNames.joined(separator: ", "))")
-        }
     }
 
     var body: some View {

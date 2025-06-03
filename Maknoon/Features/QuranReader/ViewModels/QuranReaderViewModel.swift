@@ -72,7 +72,10 @@ final class QuranReaderViewModel: ObservableObject {
                 self.logger.debug("First ayah text: \(ayahs.first?.text ?? "nil")")
                 
                 self.ayahLines = ayahs.map { $0.text }
-                self.pageText = self.extractTextWithVerseNumbers(from: ayahs)
+                                self.pageText = self.extractTextWithVerseNumbers(from: ayahs)
+
+//                self.pageText = self.extractTextWithVerseNumbers(from: baq)
+
                 
                 self.logger.debug("Processed page text: \(self.pageText)")
                 self.logger.debug("Number of ayah lines: \(self.ayahLines.count)")
