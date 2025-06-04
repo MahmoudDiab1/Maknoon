@@ -60,10 +60,11 @@ struct QuranReaderView: View {
                         .frame(height: SizeScaler.scaledPadding(60))
                         
                         CustomTabBar(selectedTab: $selectedTab, theme: theme)
-                            .frame(height: SizeScaler.scaledPadding(40))
+                            .frame(width: UIScreen.main.bounds.width, height: SizeScaler.scaledPadding(30))
                             .padding(.vertical, 5)
+                            .padding(.horizontal, 0)
+                        .background(appAppearance == .dark ? Constants.DarkModeBackground : Color.white)
                     }
-                    .background(appAppearance == .dark ? Constants.DarkModeBackground : Color.white)
                     .padding(.horizontal, 0)
                 }
                 content
@@ -186,6 +187,7 @@ struct CustomTabBar: View {
                 }
             }
         }
+        .padding(.horizontal,0)
     }
 }
 

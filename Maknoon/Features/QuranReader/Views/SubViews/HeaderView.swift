@@ -90,7 +90,7 @@ struct HeaderView: View {
             "حزب \(hizb.toArabicIndic())",
             "-",
             "صفحة \(page.toArabicIndic())"
-        ]
+        ].reversed()
     }
     
     private var theme: QuranTheme {
