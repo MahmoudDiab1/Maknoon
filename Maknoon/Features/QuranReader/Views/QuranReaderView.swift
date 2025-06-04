@@ -138,13 +138,13 @@ struct QuranReaderView: View {
         .padding(5)
     }
     
-    private var infoItems: [String] {
+    private var infoItems: [LocalizedStringKey] {
         [
-            "جزء \(viewModel.currentJuz.toArabicIndic())",
-            "-",
-            "حزب \(viewModel.currentHizb.toArabicIndic())",
-            "-",
-            "صفحة \(viewModel.currentPage.toArabicIndic())"
+            LocalizedStringKey("juz \(viewModel.currentJuz.toArabicIndic())"),
+            LocalizedStringKey("-"),
+            LocalizedStringKey("hizb \(viewModel.currentHizb.toArabicIndic())"),
+            LocalizedStringKey("-"),
+            LocalizedStringKey("page \(viewModel.currentPage.toArabicIndic())")
         ]
     }
     

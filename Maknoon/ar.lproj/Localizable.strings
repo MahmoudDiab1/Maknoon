@@ -5,5 +5,7 @@
 //  Created by Mahmoud Diab on 01/06/2025.
 //
 
-"index_title" = "فهرس السور";
-"ayah_label" = "آية";
+"juz %@" = "Juz %@";
+"hizb %@" = "Hizb %@";
+"page %@" = "Page %@";
+"-" = "-"; 
