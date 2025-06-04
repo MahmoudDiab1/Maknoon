@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		0AE43AA72DEE27EF00FD5F8A /* hafs_smart_v8.json in Resources */ = {isa = PBXBuildFile; fileRef = 0AE43AA62DEE27EF00FD5F8A /* hafs_smart_v8.json */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		0AC7811E2DEB6555008C2066 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -31,7 +27,6 @@
 		0AC781082DEB6553008C2066 /* Maknoon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maknoon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AC7811D2DEB6555008C2066 /* MaknoonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MaknoonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AC781272DEB6555008C2066 /* MaknoonUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MaknoonUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0AE43AA62DEE27EF00FD5F8A /* hafs_smart_v8.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = hafs_smart_v8.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -93,7 +88,6 @@
 		0AC780FF2DEB6553008C2066 = {
 			isa = PBXGroup;
 			children = (
-				0AE43AA62DEE27EF00FD5F8A /* hafs_smart_v8.json */,
 				0AC7810A2DEB6553008C2066 /* Maknoon */,
 				0AC781202DEB6555008C2066 /* MaknoonTests */,
 				0AC7812A2DEB6555008C2066 /* MaknoonUITests */,
@@ -232,7 +226,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0AE43AA72DEE27EF00FD5F8A /* hafs_smart_v8.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
