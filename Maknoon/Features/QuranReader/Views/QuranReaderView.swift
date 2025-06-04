@@ -31,7 +31,7 @@ struct QuranReaderView: View {
     
     var body: some View {
         ZStack {
-            theme.backgroundColor.ignoresSafeArea(edges: isFullscreen ? [] : .all)
+            theme.backgroundColor.ignoresSafeArea(edges: isFullscreen ? [.top, .bottom] : .all)
             
             VStack(spacing: 0) {
                 if !isFullscreen {
@@ -64,6 +64,7 @@ struct QuranReaderView: View {
                     )
                 } else {
                     fullscreenFooter
+                        .ignoresSafeArea(edges: .bottom)
                 }
             }
         }
