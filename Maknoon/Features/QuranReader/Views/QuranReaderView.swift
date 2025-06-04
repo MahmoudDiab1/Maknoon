@@ -9,6 +9,12 @@ struct QuranReaderView: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var isFullscreen: Bool = false
     @State private var isPageMode: Bool = true
+    @State private var selectedTab: Tab = .quran
+    
+    enum Tab {
+        case quran
+        case empty
+    }
     
     init(viewModel: QuranReaderViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -35,31 +41,41 @@ struct QuranReaderView: View {
             
             VStack(spacing: 0) {
                 if !isFullscreen {
-                    HeaderView(
-                        appAppearance: appAppearance,
-                        colorScheme: colorScheme,
-                        surahName: viewModel.currentSurahName,
-                        juz: viewModel.currentJuz,
-                        hizb: viewModel.currentHizb,
-                        page: viewModel.currentPage,
-                        isDarkMode: Binding(
-                            get: { appAppearance == .dark },
-                            set: { appAppearance = $0 ? .dark : .light }
-                        ),
-                        onBack: {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    )
+                    VStack(spacing: 0) {
+                        HeaderView(
+                            appAppearance: appAppearance,
+                            colorScheme: colorScheme,
+                            surahName: viewModel.currentSurahName,
+                            juz: viewModel.currentJuz,
+                            hizb: viewModel.currentHizb,
+                            page: viewModel.currentPage,
+                            isDarkMode: Binding(
+                                get: { appAppearance == .dark },
+                                set: { appAppearance = $0 ? .dark : .light }
+                            ),
+                            onBack: {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        )
+                        .frame(height: SizeScaler.scaledPadding(60))
+                        
+                        CustomTabBar(selectedTab: $selectedTab, theme: theme)
+                            .frame(height: SizeScaler.scaledPadding(40))
+                            .padding(.vertical, 5)
+                    }
+                    .background(appAppearance == .dark ? Constants.DarkModeBackground : Color.white)
+                    .padding(.horizontal, 0)
                 }
                 content
+                
                 if !isFullscreen {
                     FooterView(
                         currentPage: viewModel.currentPage,
                         isPageMode: $isPageMode,
                         infoItems: infoItems,
                         textColor: theme.textColor,
-                        onNext: goToNextPage,
-                        onPrevious: goToPreviousPage,
+                        onNext: viewModel.goToNextPage,
+                        onPrevious: viewModel.goToPreviousPage,
                         onToggleMode: { isPageMode.toggle() }
                     )
                 } else {
@@ -88,17 +104,20 @@ struct QuranReaderView: View {
                     .foregroundColor(appAppearance == .light ? theme.headerColor : Color.white)
             }
             .padding(.horizontal, 16)
+            .padding(.top, SizeScaler.scaledPadding(20))
             
             ZStack(alignment: .top) {
                 theme.backgroundColor
                 Group {
-                    if isPageMode {
-                        QuranTextView(
-                            text: viewModel.pageText,
-                            isFullscreen: $isFullscreen,
-                            textColor: theme.textColor
-                        )
-                    }
+                    if selectedTab == .quran {
+                        if isPageMode {
+                            QuranTextView(
+                                text: viewModel.pageText,
+                                isFullscreen: $isFullscreen,
+                                textColor: theme.textColor
+                            )
+                        }
+                    } 
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -132,22 +151,76 @@ struct QuranReaderView: View {
         DragGesture().onEnded { value in
             let threshold: CGFloat = 50
             if value.translation.width > threshold {
-                goToNextPage()
+                viewModel.goToNextPage()
             } else if value.translation.width < -threshold {
-                goToPreviousPage() 
+                viewModel.goToPreviousPage()
             }
         }
     }
+}
+
+// MARK: - Custom Tab Bar
+struct CustomTabBar: View {
+    @Binding var selectedTab: QuranReaderView.Tab
+    let theme: QuranTheme
     
-    private func goToNextPage() {
-        guard viewModel.currentPage < 604 else { return }
-        viewModel.currentPage += 1
-        viewModel.loadPage()
+    var body: some View {
+        HStack(spacing: 20) {
+            TabButton(
+                title: "قراءة عادية",
+                isSelected: selectedTab == .quran,
+                theme: theme
+            ) {
+                withAnimation {
+                    selectedTab = .quran
+                }
+            }
+            
+            TabButton(
+                title: "قراءة تفاعلية",
+                isSelected: selectedTab == .empty,
+                theme: theme
+            ) {
+                withAnimation {
+                    selectedTab = .empty
+                }
+            }
+        }
     }
+}
+
+struct TabButton: View {
+    let title: String
+    let isSelected: Bool
+    let theme: QuranTheme
+    let action: () -> Void
     
-    private func goToPreviousPage() {
-        guard viewModel.currentPage > 1 else { return }
-        viewModel.currentPage -= 1
-        viewModel.loadPage()
+    var body: some View {
+        Button(action: action) {
+            HStack(alignment: .center, spacing: 5) {
+                Spacer()
+                Image(isSelected ? AppAssets.Icons.bookEnabled : AppAssets.Icons.bookDisabled)
+                
+                Text(title)
+                    .font(.custom("IBM Plex Sans Arabic", size: 14))
+                    .foregroundColor(isSelected ? Color(red: 231/255, green: 182/255, blue: 102/255) : Color(red: 83/255, green: 106/255, blue: 123/255))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 44)
+                Spacer()
+            }.background(
+                VStack {
+                    Spacer()
+                    if isSelected {
+                        Rectangle()
+                            .fill(Color(red: 231/255, green: 182/255, blue: 102/255))
+                            .frame(height: 3)
+                            .clipShape(
+                                RoundedCorner(radius: 10, corners: [.topLeft, .topRight])
+                            )
+                    }
+                }
+            )
+        }
+        .frame(width: 127)
     }
 }

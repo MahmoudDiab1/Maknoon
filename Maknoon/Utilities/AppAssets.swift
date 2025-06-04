@@ -7,6 +7,8 @@ enum AppAssets {
     /// System and custom icons used throughout the app
     enum Icons {
         // System SF Symbols
+        static let bookDisabled = "bookDisabled"
+        static let bookEnabled = "bookEnabled" 
         static let arrowLeft = "arrow.left"
         static let arrowRight = "arrow.right"
         static let arrowHeader = "arrow-right-header"

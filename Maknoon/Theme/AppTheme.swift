@@ -140,7 +140,7 @@ extension View {
     func secondaryButtonStyle() -> some View {
         self.buttonStyle(SecondaryButtonStyle())
     }
-} 
+}
 
 extension Int {
     func toArabicIndic() -> String {

@@ -95,4 +95,16 @@ final class QuranReaderViewModel: ObservableObject {
         logger.debug("Extracted text with verse numbers: \(text)")
         return text
     }
-} 
+    
+   func goToNextPage() {
+        guard currentPage < 604 else { return }
+        currentPage += 1
+        loadPage()
+    }
+    
+   func goToPreviousPage() {
+        guard currentPage > 1 else { return }
+        currentPage -= 1
+        loadPage()
+    }
+}
