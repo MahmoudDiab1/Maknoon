@@ -2,11 +2,11 @@ import Foundation
 import SwiftUI
 
 final class QuranReaderFactory {
-    static func makeQuranReaderView() -> some View {
+    static func makeQuranReaderView(page: Int) -> some View {
         let networkService = NetworkService()
         let api = QuranAPIImpl(networkService: networkService)
         let viewModel = QuranReaderViewModel(api: api)
-        return QuranReaderView(viewModel: viewModel)
+        return QuranReaderView(viewModel: viewModel, currentPage: page)
     }
     
     static func makeQuranReaderViewModel() -> QuranReaderViewModel {

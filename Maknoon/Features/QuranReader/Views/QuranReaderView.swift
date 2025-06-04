@@ -6,12 +6,13 @@ struct QuranReaderView: View {
     @StateObject private var viewModel: QuranReaderViewModel
     @AppStorage("appAppearance") private var appAppearance: AppAppearance = .light
     @Environment(\.colorScheme) private var colorScheme
-    @State private var currentPage: Int = 11
+    @State private var currentPage: Int
     @State private var isFullscreen: Bool = false
     @State private var isPageMode: Bool = true
     
-    init(viewModel: QuranReaderViewModel) {
+    init(viewModel: QuranReaderViewModel, currentPage: Int) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.currentPage = currentPage
     }
     
     private var selectedColorScheme: ColorScheme? {
