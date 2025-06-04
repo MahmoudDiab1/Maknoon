@@ -54,26 +54,20 @@ struct PageEntryView: View {
                         }
                     
                     if let page = pageInt {
-                        NavigationLink(
-                            destination: QuranReaderFactory.makeQuranReaderView(page: page),
-                            isActive: $shouldNavigate
-                        ) {
-                            Button(action: {
-                                if isValidPage {
-                                    shouldNavigate = true
-                                }
-                            }) {
-                                Text("اقرا")
-                                    .font(.custom("RTL-Maghfira", size: 18))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(isValidPage ? theme.headerColor : Color.gray)
-                                    .cornerRadius(10)
-                            }
-                            .disabled(!isValidPage)
+                        NavigationLink {
+                            QuranReaderFactory.makeQuranReaderView(page: page)
+                                .navigationBarHidden(true)
+                                .navigationBarBackButtonHidden(true)
+                        } label: {
+                            Text("اقرا")
+                                .font(.custom("RTL-Maghfira", size: 18))
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(isValidPage ? theme.headerColor : Color.gray)
+                                .cornerRadius(10)
                         }
-                        .buttonStyle(PlainButtonStyle())
+                        .disabled(!isValidPage)
                     }
                 }
                 .padding()

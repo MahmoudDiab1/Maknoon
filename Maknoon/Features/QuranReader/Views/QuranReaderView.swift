@@ -6,7 +6,7 @@ struct QuranReaderView: View {
     @StateObject private var viewModel: QuranReaderViewModel
     @AppStorage("appAppearance") private var appAppearance: AppAppearance = .light
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var isFullscreen: Bool = false
     @State private var isPageMode: Bool = true
     @State private var selectedTab: Tab = .quran
@@ -54,7 +54,7 @@ struct QuranReaderView: View {
                                 set: { appAppearance = $0 ? .dark : .light }
                             ),
                             onBack: {
-                                presentationMode.wrappedValue.dismiss()
+                                dismiss()
                             }
                         )
                         .frame(height: SizeScaler.scaledPadding(60))

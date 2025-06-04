@@ -77,6 +77,9 @@ struct HeaderView: View {
             
             Image(AppAssets.Icons.arrowHeader)
                 .frame(width: 32, height: 32)
+                .onTapGesture {
+                    onBack()
+                }
         }
     }
     
