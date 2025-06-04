@@ -4,7 +4,20 @@
 //
 //  Created by Mahmoud Diab on 01/06/2025.
 //
-"juz %@" = "جزء %@";
-"hizb %@" = "حزب %@";
-"page %@" = "صفحة %@";
+
+/* Quran Reader Info Items */
+"juz %@" = "Juz %@";
+"hizb %@" = "Hizb %@";
+"page %@" = "Page %@";
 "-" = "-";
+
+/* Navigation */
+"back" = "Back";
+"next" = "Next";
+"previous" = "Previous";
+
+/* Settings */
+"settings" = "Settings";
+"appearance" = "Appearance";
+"darkMode" = "Dark Mode";
+"lightMode" = "Light Mode"; 

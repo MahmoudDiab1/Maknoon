@@ -7,6 +7,7 @@ struct QuranReaderView: View {
     @AppStorage("appAppearance") private var appAppearance: AppAppearance = .light
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.locale) private var locale
     @State private var isFullscreen: Bool = false
     @State private var isPageMode: Bool = true
     @State private var selectedTab: Tab = .quran
@@ -33,6 +34,10 @@ struct QuranReaderView: View {
     
     private var theme: QuranTheme {
         QuranTheme.theme(for: colorScheme)
+    }
+    
+    private var isRTL: Bool {
+        locale.languageCode == "ar"
     }
     
     var body: some View {
@@ -91,6 +96,7 @@ struct QuranReaderView: View {
         .preferredColorScheme(selectedColorScheme)
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
+        .environment(\.layoutDirection, isRTL ? .rightToLeft : .leftToRight)
     }
     
     private var content: some View {
@@ -129,22 +135,22 @@ struct QuranReaderView: View {
     private var fullscreenFooter: some View {
         HStack(spacing: SizeScaler.scaledPadding(16)) {
             Spacer()
-            ForEach(infoItems, id: \.self) {
-                Text($0)
-                    .font(.custom("IBMPlexSansArabic-Regular", size: SizeScaler.scaledFont(14)))
+            ForEach(0..<infoItems.count, id: \.self) { index in
+                Text(infoItems[index])
+                    .font(.custom(isRTL ? "RTL-Maghfira" : "IBMPlexSansArabic-Regular", size: SizeScaler.scaledFont(14)))
                     .foregroundColor(theme.textColor)
             }
         }
         .padding(5)
     }
     
-    private var infoItems: [LocalizedStringKey] {
+    private var infoItems: [String] {
         [
-            LocalizedStringKey("juz \(viewModel.currentJuz.toArabicIndic())"),
-            LocalizedStringKey("-"),
-            LocalizedStringKey("hizb \(viewModel.currentHizb.toArabicIndic())"),
-            LocalizedStringKey("-"),
-            LocalizedStringKey("page \(viewModel.currentPage.toArabicIndic())")
+            String(format: NSLocalizedString("juz %@", comment: ""), viewModel.currentJuz.toArabicIndic()),
+            NSLocalizedString("-", comment: ""),
+            String(format: NSLocalizedString("hizb %@", comment: ""), viewModel.currentHizb.toArabicIndic()),
+            NSLocalizedString("-", comment: ""),
+            String(format: NSLocalizedString("page %@", comment: ""), viewModel.currentPage.toArabicIndic())
         ]
     }
     
