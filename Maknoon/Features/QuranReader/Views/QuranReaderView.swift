@@ -6,13 +6,12 @@ struct QuranReaderView: View {
     @StateObject private var viewModel: QuranReaderViewModel
     @AppStorage("appAppearance") private var appAppearance: AppAppearance = .light
     @Environment(\.colorScheme) private var colorScheme
-    @State private var currentPage: Int
+    @Environment(\.presentationMode) private var presentationMode
     @State private var isFullscreen: Bool = false
     @State private var isPageMode: Bool = true
     
-    init(viewModel: QuranReaderViewModel, currentPage: Int) {
+    init(viewModel: QuranReaderViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
-        self.currentPage = currentPage
     }
     
     private var selectedColorScheme: ColorScheme? {
@@ -42,17 +41,20 @@ struct QuranReaderView: View {
                         surahName: viewModel.currentSurahName,
                         juz: viewModel.currentJuz,
                         hizb: viewModel.currentHizb,
-                        page: currentPage,
+                        page: viewModel.currentPage,
                         isDarkMode: Binding(
                             get: { appAppearance == .dark },
                             set: { appAppearance = $0 ? .dark : .light }
-                        )
+                        ),
+                        onBack: {
+                            presentationMode.wrappedValue.dismiss()
+                        }
                     )
                 }
                 content
                 if !isFullscreen {
                     FooterView(
-                        currentPage: currentPage,
+                        currentPage: viewModel.currentPage,
                         isPageMode: $isPageMode,
                         infoItems: infoItems,
                         textColor: theme.textColor,
@@ -66,9 +68,11 @@ struct QuranReaderView: View {
             }
         }
         .gesture(swipeGesture)
-        .onAppear { viewModel.loadPage(currentPage) }
+        .onAppear { viewModel.loadPage() }
         .animation(.easeInOut(duration: 0.3), value: isFullscreen)
         .preferredColorScheme(selectedColorScheme)
+        .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true)
     }
     
     private var content: some View {
@@ -119,7 +123,7 @@ struct QuranReaderView: View {
             "-",
             "حزب \(viewModel.currentHizb.toArabicIndic())",
             "-",
-            "صفحة \(currentPage.toArabicIndic())"
+            "صفحة \(viewModel.currentPage.toArabicIndic())"
         ]
     }
     
@@ -135,28 +139,14 @@ struct QuranReaderView: View {
     }
     
     private func goToNextPage() {
-        guard currentPage < 604 else { return }
-        currentPage += 1
-        viewModel.loadPage(currentPage)
+        guard viewModel.currentPage < 604 else { return }
+        viewModel.currentPage += 1
+        viewModel.loadPage()
     }
     
     private func goToPreviousPage() {
-        guard currentPage > 1 else { return }
-        currentPage -= 1
-        viewModel.loadPage(currentPage)
-    }
-}
-
-// MARK: - View Modifiers
-internal extension View {
-    func commonFooterButtonStyle() -> some View {
-        self
-            .font(.custom("IBM Plex Sans Arabic", size: SizeScaler.scaledFont(10)))
-            .multilineTextAlignment(.center)
-            .foregroundColor(.white)
-            .frame(width: SizeScaler.scaledPadding(100), height: SizeScaler.scaledPadding(32))
-            .padding(SizeScaler.scaledPadding(6))
-            .background(Constants.ButtonsSecodaryButtonColor)
-            .cornerRadius(40)
+        guard viewModel.currentPage > 1 else { return }
+        viewModel.currentPage -= 1
+        viewModel.loadPage()
     }
 }

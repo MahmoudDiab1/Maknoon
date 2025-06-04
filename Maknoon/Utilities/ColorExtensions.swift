@@ -67,3 +67,14 @@ extension Color {
     }
 }
 
+extension String {
+    func toArabicIndic() -> String {
+        let arabicNumbers = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"]
+        return self.map { char in
+            if let number = Int(String(char)) {
+                return arabicNumbers[number]
+            }
+            return String(char)
+        }.joined()
+    }
+}

@@ -17,6 +17,8 @@ struct HeaderView: View {
     let page: Int
     @Binding var isDarkMode: Bool
     
+    let onBack: () -> Void
+    
     var body: some View {
         ZStack {
             headerBackground

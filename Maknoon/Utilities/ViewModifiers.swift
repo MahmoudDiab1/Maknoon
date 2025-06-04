@@ -128,4 +128,15 @@ extension View {
             message: message
         ))
     }
-} 
+    
+    func commonFooterButtonStyle() -> some View {
+        self
+            .font(.custom("IBM Plex Sans Arabic", size: SizeScaler.scaledFont(10)))
+            .multilineTextAlignment(.center)
+            .foregroundColor(.white)
+            .frame(width: SizeScaler.scaledPadding(100), height: SizeScaler.scaledPadding(32))
+            .padding(SizeScaler.scaledPadding(6))
+            .background(Constants.ButtonsSecodaryButtonColor)
+            .cornerRadius(40)
+    }
+}

@@ -4,7 +4,6 @@
 //
 //  Created by Mahmoud Diab on 04/06/2025.
 //
-
 import SwiftUI
 
 // MARK: - Footer Components

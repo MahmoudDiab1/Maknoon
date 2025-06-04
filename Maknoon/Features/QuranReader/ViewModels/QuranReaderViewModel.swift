@@ -3,18 +3,6 @@ import Combine
 import SwiftUI
 import os.log
 
-extension String {
-    func toArabicIndic() -> String {
-        let arabicNumbers = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"]
-        return self.map { char in
-            if let number = Int(String(char)) {
-                return arabicNumbers[number]
-            }
-            return String(char)
-        }.joined()
-    }
-}
-
 final class QuranReaderViewModel: ObservableObject {
     private let api: QuranAPI
     private let logger = Logger(subsystem: "com.maknoon.quran", category: "ViewModel")
@@ -28,54 +16,54 @@ final class QuranReaderViewModel: ObservableObject {
     @Published var currentSurahName: String = ""
     @Published var currentJuz: Int = 1
     @Published var currentHizb: Int = 1
-    
-    init(api: QuranAPI = QuranAPIImpl(networkService: NetworkService())) {
+    @Published var currentPage: Int
+
+    init(api: QuranAPI, currentPage: Int ) {
         self.api = api
-        logger.debug("QuranReaderViewModel initialized")
+        self.currentPage = currentPage
     }
     
-    func loadPage(_ page: Int) {
+    func loadPage( ) {
         isLoading = true
         errorMessage = nil
         pageText = ""
         ayahLines = []
         
-        logger.debug("Starting to load page \(page)")
+        logger.debug("Starting to load page \(self.currentPage)")
         
-        api.fetchPageAyahs(page: page)
+        api.fetchPageAyahs(page: currentPage)
             .sink { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
                     self?.errorMessage = error.localizedDescription
-                    self?.logger.error("Failed to load page \(page): \(error.localizedDescription)")
+                    self?.logger.error("Failed to load page \(self?.currentPage ?? 1): \(error.localizedDescription)")
                     
-                    if page > 1 {
+                    if self?.currentPage ?? 2 > 1 {
                         self?.logger.info("Attempting to load previous page")
-                        self?.loadPage(page - 1)
+                        self?.currentPage -= 1
+                        self?.loadPage()
                     }
                 }
             } receiveValue: { [weak self] ayahs in
                 guard let self = self else { return }
                 
                 if ayahs.isEmpty {
-                    self.logger.warning("No ayahs found for page \(page)")
-                    self.errorMessage = "No ayahs found for page \(page)"
+                    self.logger.warning("No ayahs found for page \(currentPage)")
+                    self.errorMessage = "No ayahs found for page \(currentPage)"
                     
-                    if page > 1 {
+                    if currentPage > 1 {
                         self.logger.info("Attempting to load previous page")
-                        self.loadPage(page - 1)
+                        currentPage -= 1
+                        self.loadPage()
                     }
                     return
                 }
                 
-                self.logger.debug("Received \(ayahs.count) ayahs for page \(page)")
+                self.logger.debug("Received \(ayahs.count) ayahs for page \(currentPage)")
                 self.logger.debug("First ayah text: \(ayahs.first?.text ?? "nil")")
                 
                 self.ayahLines = ayahs.map { $0.text }
                                 self.pageText = self.extractTextWithVerseNumbers(from: ayahs)
-
-//                self.pageText = self.extractTextWithVerseNumbers(from: baq)
-
                 
                 self.logger.debug("Processed page text: \(self.pageText)")
                 self.logger.debug("Number of ayah lines: \(self.ayahLines.count)")
@@ -83,15 +71,19 @@ final class QuranReaderViewModel: ObservableObject {
                 self.currentPageAyahs = ayahs
                 
                 if let firstAyah = ayahs.first {
-                    self.currentSurahName = "سُورَة \(firstAyah.surahName)"
+                    self.currentSurahName = "\(firstAyah.surahName)"
+                    
+                    currentJuz = firstAyah.juz
+                    self.currentHizb = ((firstAyah.juz - 1) * 2) + ((firstAyah.hizbQuarter - 1) / 2) + 1
                     self.logger.debug("Updated surah name to: \(self.currentSurahName)")
                 }
-                
-                self.logger.info("Successfully loaded page \(page) with \(ayahs.count) ayahs")
+
+                self.logger.info("Successfully loaded page \(currentPage) with \(ayahs.count) ayahs")
             }
             .store(in: &cancellables)
     }
-    
+     
+
     func toArabicIndic(_ number: Int) -> String {
         String(number).toArabicIndic()
     }
